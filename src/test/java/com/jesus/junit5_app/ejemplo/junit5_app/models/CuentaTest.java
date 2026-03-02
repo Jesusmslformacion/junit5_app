@@ -3,6 +3,7 @@ package com.jesus.junit5_app.ejemplo.junit5_app.models;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -20,6 +21,7 @@ public class CuentaTest {
 
         String esperado = "Jesus";
         String real = cuenta.getPersona();
+        assertNotNull(real);
          assertEquals(esperado, real);
          assertTrue(real.equals("Jesus"));
 }
@@ -28,6 +30,7 @@ public class CuentaTest {
     @Test
     void testSaldoCuenta() {
         Cuenta cuenta = new Cuenta("Jesus", new BigDecimal("1000.12345"));
+        assertNotNull(cuenta.getSaldo());
         assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
         assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
         assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
@@ -44,6 +47,29 @@ public class CuentaTest {
         
         
     }
+
+    // Test para el método debito de la cuenta
+    @Test
+    void testDebitoCuenta() {
+        Cuenta cuenta = new Cuenta("Jesus", new BigDecimal("1000.12345"));
+        cuenta.debito(new BigDecimal(100));
+        assertNotNull(cuenta.getSaldo());
+        assertEquals(900, cuenta.getSaldo().intValue());
+        assertEquals("900.12345", cuenta.getSaldo().toPlainString());
+        
+    }
+
+    @Test
+    void testCreditoCuenta() {
+        Cuenta cuenta = new Cuenta("Jesus", new BigDecimal("1000.12345"));
+        cuenta.credito(new BigDecimal(100));
+        assertNotNull(cuenta.getSaldo());
+        assertEquals(1100, cuenta.getSaldo().intValue());
+        assertEquals("1100.12345", cuenta.getSaldo().toPlainString());
+        
+    }
+
+    
 
     
 
