@@ -2,6 +2,8 @@ package com.jesus.junit5_app.ejemplo.junit5_app.models;
 
 import java.math.BigDecimal;
 
+import com.jesus.junit5_app.ejemplo.junit5_app.exception.DineroInsuficienteException;
+
 public class Cuenta {
 
     // Atributos
@@ -31,7 +33,11 @@ public class Cuenta {
     }
 
     public void debito(BigDecimal monto) {
-        this.saldo = this.saldo.subtract(monto);
+        BigDecimal nuevoSaldo = this.saldo.subtract(monto);
+        if (nuevoSaldo.compareTo(BigDecimal.ZERO) < 0) {
+            throw new DineroInsuficienteException("Dinero insuficiente");
+        }
+        this.saldo = nuevoSaldo;
     }
 
     public void credito(BigDecimal monto) {
