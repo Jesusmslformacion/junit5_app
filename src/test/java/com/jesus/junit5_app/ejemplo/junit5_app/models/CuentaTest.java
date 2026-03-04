@@ -111,11 +111,11 @@ public class CuentaTest {
 
         banco.setNombre("Banco del Estado");
         banco.transferir(cuenta2, cuenta1, new BigDecimal(500));
-        assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
+        assertEquals("1000.898", cuenta2.getSaldo().toPlainString());
         assertEquals("3000", cuenta1.getSaldo().toPlainString());
 
         assertEquals(2, banco.getCuentas().size());
-        assertEquals("Banco del Estado", cuenta1.getBanco().getNombre());
+        assertEquals("Banco del Estado.", cuenta1.getBanco().getNombre());
         assertEquals("Jesus", banco.getCuentas().stream()
                 .filter(c -> c.getPersona().equals("Jesus"))
                 .findFirst()
