@@ -1,5 +1,6 @@
 package com.jesus.junit5_app.ejemplo.junit5_app.models;
 
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -100,6 +101,7 @@ public class CuentaTest {
         
     }
 
+    // Test para la relación entre banco y cuentas
     @Test
     void testRelacionBancoCuentas() {
         Cuenta cuenta1 = new Cuenta("John Doe", new BigDecimal("2500"));
@@ -111,18 +113,37 @@ public class CuentaTest {
 
         banco.setNombre("Banco del Estado");
         banco.transferir(cuenta2, cuenta1, new BigDecimal(500));
-        assertEquals("1000.898", cuenta2.getSaldo().toPlainString());
-        assertEquals("3000", cuenta1.getSaldo().toPlainString());
+        assertAll(()-> 
+        {
+            assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
+            }, 
+                ()-> {
+                    assertEquals("3000", cuenta1.getSaldo().toPlainString());
+                }, 
+                ()-> {
+                    assertEquals(2, banco.getCuentas().size());
+                }, 
+                ()-> {
+                    assertEquals("Banco del Estado", cuenta1.getBanco().getNombre());
+                },
+                ()-> {
+                    assertEquals("Jesus", banco.getCuentas().stream()
+                        .filter(c -> c.getPersona().equals("Jesus"))
+                        .findFirst()
+                        .get().getPersona());
+                    },
+                ()-> {
+                    assertTrue(banco.getCuentas().stream()
+                        .anyMatch(c -> c.getPersona().equals("Jesus")));
+                    });
+        
+        
 
-        assertEquals(2, banco.getCuentas().size());
-        assertEquals("Banco del Estado.", cuenta1.getBanco().getNombre());
-        assertEquals("Jesus", banco.getCuentas().stream()
-                .filter(c -> c.getPersona().equals("Jesus"))
-                .findFirst()
-                .get().getPersona());
+        
+        
+        
 
-        assertTrue(banco.getCuentas().stream()
-                .anyMatch(c -> c.getPersona().equals("Jesus")));
+        
         
         
     }
