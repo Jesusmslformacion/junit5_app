@@ -25,9 +25,10 @@ public class CuentaTest {
 
         String esperado = "Jesus";
         String real = cuenta.getPersona();
-        assertNotNull(real);
-         assertEquals(esperado, real);
-         assertTrue(real.equals("Jesus"));
+        assertNotNull(real, () -> "El nombre de la cuenta no puede ser nulo");
+         assertEquals(esperado, real,() -> "El nombre de la cuenta no es el esperado" + esperado
+            + " per fue " + real);
+         assertTrue(real.equals("Jesus"), () -> "El nombre de la cuenta debe ser igual a Jesus");
 }
 
     // Test para el saldo de la cuenta
@@ -113,29 +114,19 @@ public class CuentaTest {
 
         banco.setNombre("Banco del Estado");
         banco.transferir(cuenta2, cuenta1, new BigDecimal(500));
-        assertAll(()-> 
-        {
-            assertEquals("1000.8989", cuenta2.getSaldo().toPlainString());
-            }, 
-                ()-> {
-                    assertEquals("3000", cuenta1.getSaldo().toPlainString());
-                }, 
-                ()-> {
-                    assertEquals(2, banco.getCuentas().size());
-                }, 
-                ()-> {
-                    assertEquals("Banco del Estado", cuenta1.getBanco().getNombre());
-                },
-                ()-> {
-                    assertEquals("Jesus", banco.getCuentas().stream()
+        assertAll(()-> assertEquals("1000.8989", cuenta2.getSaldo().toPlainString(), 
+                                    () -> "El saldo de la cuenta 2 no es el esperado"), 
+                ()-> assertEquals("3000", cuenta1.getSaldo().toPlainString(), 
+                                    () -> "El saldo de la cuenta 1 no es el esperado"), 
+                ()-> assertEquals(2, banco.getCuentas().size(), 
+                                    () -> "El numero de las cuentas en el banco no es el esperado"), 
+                ()-> assertEquals("Banco del Estado", cuenta1.getBanco().getNombre()),
+                ()-> assertEquals("Jesus", banco.getCuentas().stream()
                         .filter(c -> c.getPersona().equals("Jesus"))
                         .findFirst()
-                        .get().getPersona());
-                    },
-                ()-> {
-                    assertTrue(banco.getCuentas().stream()
-                        .anyMatch(c -> c.getPersona().equals("Jesus")));
-                    });
+                        .get().getPersona()),
+                ()-> assertTrue(banco.getCuentas().stream()
+                        .anyMatch(c -> c.getPersona().equals("Jesus"))));
         
         
 
