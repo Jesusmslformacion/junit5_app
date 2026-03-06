@@ -11,27 +11,45 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
 import com.jesus.junit5_app.ejemplo.junit5_app.exception.DineroInsuficienteException;
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Esta anotación se utiliza para indicar que los métodos anotados con @BeforeAll y @AfterAll no necesitan ser estáticos, ya que se ejecutarán en una instancia de prueba por clase en lugar de una instancia de prueba por método.
 public class CuentaTest {
     Cuenta cuenta;
 
+    // Método que se ejecuta antes de cada test
     @BeforeEach
     void initMetodoTest() {
         this.cuenta = new Cuenta("Jesus", new BigDecimal("1000.12345"));
         System.out.println("Iniciando el metodo de prueba");
     }
 
+    // Método que se ejecuta después de cada test
     @AfterEach
     void tearDown() {
-        System.out.println("Finalizanco el metodo de prueba");
+        System.out.println("Finalizando el metodo de prueba");
+    }
+
+    // Método que se ejecuta antes de todos los test
+    @BeforeAll
+    static void beforeAll() {
+        System.out.println("Iniciando el test");
+    }
+
+    // Método que se ejecuta después de todos los test
+    @AfterAll
+    static void afterAll() {
+        System.out.println("Finalizando el test");
+        
     }
 
     // Test para el nombre de la cuenta
@@ -53,7 +71,6 @@ public class CuentaTest {
     @Test
     @DisplayName("Probando el saldo de la cuenta!")
     void testSaldoCuenta() {
-        cuenta = new Cuenta("Jesus", new BigDecimal("1000.12345"));
         assertNotNull(cuenta.getSaldo());
         assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
         assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
