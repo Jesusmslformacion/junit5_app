@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.util.Map;
+import java.util.Properties;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -20,9 +22,19 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.DisabledOnJre;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
+import org.junit.jupiter.api.condition.EnabledOnJre;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.JRE;
+import org.junit.jupiter.api.condition.OS;
 
 import com.jesus.junit5_app.ejemplo.junit5_app.exception.DineroInsuficienteException;
-@TestInstance(TestInstance.Lifecycle.PER_CLASS) // Esta anotación se utiliza para indicar que los métodos anotados con @BeforeAll y @AfterAll no necesitan ser estáticos, ya que se ejecutarán en una instancia de prueba por clase en lugar de una instancia de prueba por método.
+// Esta anotación se utiliza para indicar que los métodos anotados con @BeforeAll y @AfterAll no necesitan ser estáticos, ya que se ejecutarán en una instancia de prueba por clase en lugar de una instancia de prueba por método.
+//@TestInstance(TestInstance.Lifecycle.PER_CLASS) 
 public class CuentaTest {
     Cuenta cuenta;
 
@@ -170,15 +182,99 @@ public class CuentaTest {
                         .anyMatch(c -> c.getPersona().equals("Jesus"))));
         
         
+    }
 
-        
-        
-        
+    @Test
+    @EnabledOnOs(OS.WINDOWS)
+    void testSoloWindows() {
 
-        
-        
+    }
+
+     @Test
+    @EnabledOnOs({OS.LINUX,OS.MAC})
+    void testSoloLinuxMac() {
+
+    }
+
+     @Test
+    @DisabledOnOs(OS.WINDOWS)
+    void testNoWindows() {
+
+    }
+
+
+     @Test
+     @EnabledOnJre(JRE.JAVA_21)
+    void soloJdk21() {
+
+    }
+
+    @Test
+     @DisabledOnJre(JRE.JAVA_21)
+    void testNoJdk21() {
+
+    }
+
+    @Test
+    void imprimirSystemProperties() {
+        Properties properties = System.getProperties();
+        properties.forEach((k,v)-> System.out.println(k + " :" + v));
+
+    }
+
+    @Test
+    @EnabledIfSystemProperty(named = "java.version", matches = ".*21.*")
+    void testJavaVersion() {
         
     }
+
+    @Test
+    @EnabledIfSystemProperty(named = "os.arch", matches = ".*64.*")
+    void testSolo64() {
+        
+    }
+
+    @Test
+    void imprimirVariablesAmbiente() {
+        Map<String, String> getenv =System.getenv();
+        getenv.forEach((k, v) -> System.out.println(k + " = " + v));
+        
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named =  "JAVA_HOME", matches = ".*jdk-21.*")
+    void testJavaHome() {
+        
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = ".*4.*")
+    void testProcesadores() {
+        
+    }
+
+    @Test
+    @EnabledIfEnvironmentVariable(named = "ENVIRONMENT" , matches = "dev")
+    void testEnv() {
+        
+    }
+
+    @Test
+    @DisabledIfEnvironmentVariable(named = "ENVIRONMENT" , matches = "dev")
+    void testEnvProdDisabled() {
+        
+    }
+
+    
+
+    
+
+    
+    
+    
+    
+
+    
 
     
     
