@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assumptions.assumeTrue;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -31,6 +32,7 @@ import org.junit.jupiter.api.condition.EnabledOnJre;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.JRE;
 import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.Assumptions;
 
 import com.jesus.junit5_app.ejemplo.junit5_app.exception.DineroInsuficienteException;
 // Esta anotación se utiliza para indicar que los métodos anotados con @BeforeAll y @AfterAll no necesitan ser estáticos, ya que se ejecutarán en una instancia de prueba por clase en lugar de una instancia de prueba por método.
@@ -265,21 +267,17 @@ public class CuentaTest {
         
     }
 
-    
+    @Test
+    @DisplayName("test Saldo Cuenta Dev")
+    void testSaldoCuentaDev() {
+        boolean esDev = "dev".equals(System.getProperty("ENV"));
+        assumeTrue(esDev);
+        assertNotNull(cuenta.getSaldo());
+        assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
+        assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
+        assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+    }
 
-    
-
-    
-    
-    
-    
-
-    
-
-    
-    
-
-    
 
     
 }
