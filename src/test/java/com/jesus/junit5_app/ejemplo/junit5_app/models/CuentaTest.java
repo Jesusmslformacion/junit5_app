@@ -23,6 +23,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
@@ -318,6 +319,16 @@ public class CuentaTest {
             assertFalse(cuenta.getSaldo().compareTo(BigDecimal.ZERO) < 0);
             assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
         });
+    }
+
+    @DisplayName("Repetir Debito Cuenta 5 veces")
+    @RepeatedTest(value = 5, name = "Repeticion numero {currentRepetition} de {totalRepetitions}") 
+    void testDebitoCuentaRepetir() {
+        cuenta.debito(new BigDecimal(100));
+        assertNotNull(cuenta.getSaldo());
+        assertEquals(900, cuenta.getSaldo().intValue());
+        assertEquals("900.12345", cuenta.getSaldo().toPlainString());
+        
     }
 
 
