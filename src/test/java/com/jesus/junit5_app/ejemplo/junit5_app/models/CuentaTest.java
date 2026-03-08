@@ -56,9 +56,11 @@ public class CuentaTest {
 
     // Método que se ejecuta antes de cada test
     @BeforeEach
-    void initMetodoTest() {
+    void initMetodoTest(TestInfo testInfo, TestReporter testReporter) {
         this.cuenta = new Cuenta("Jesus", new BigDecimal("1000.12345"));
         System.out.println("Iniciando el metodo de prueba");
+        System.out.println("Ejecutando: " + testInfo.getDisplayName() + " " + testInfo.getTestMethod().orElse(null).getName()
+        + " con tags " + testInfo.getTags());
     }
 
     // Método que se ejecuta después de cada test
@@ -87,8 +89,8 @@ public class CuentaTest {
         // Test para el nombre de la cuenta
     @Test
     @DisplayName("Nombre de la cuenta!")
-    void testNombreCuenta(TestInfo testInfo, TestReporter testReporter) {
-       System.out.println("Ejecutando: " + testInfo.getDisplayName() + " con tags " + testInfo.getTags());
+    void testNombreCuenta() {
+       
         //cuenta.setPersona("Jesus");
 
         String esperado = "Jesus";
