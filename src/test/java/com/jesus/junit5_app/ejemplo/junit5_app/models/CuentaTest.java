@@ -27,6 +27,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
+import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
@@ -77,6 +78,7 @@ public class CuentaTest {
         
     }
 
+    @Tag("cuenta")
     @Nested
     @DisplayName("Probando atributos de la cuenta corriente")
     class CuentaTestNombreSaldo {
@@ -119,9 +121,11 @@ public class CuentaTest {
     }
     }
     
+
     @Nested
     class CuentaOperacionesTest {
         // Test para el método debito de la cuenta
+    @Tag("cuenta")
     @Test
     @DisplayName("Probando el debito de la cuenta!")
     void testDebitoCuenta() {
@@ -132,6 +136,7 @@ public class CuentaTest {
         
     }
 
+    @Tag("cuenta")
     @Test
     @DisplayName("Probando el credito de la cuenta!")
     void testCreditoCuenta() {
@@ -143,6 +148,8 @@ public class CuentaTest {
     }
 
     // Test para el método transferir de la cuenta
+    @Tag("cuenta")
+    @Tag("banco")
     @Test
     @DisplayName("Probando el transferir de la cuenta!")
     void testTransferirDineroCuentas() {
@@ -161,6 +168,8 @@ public class CuentaTest {
 
     // Test para el método debito de la cuenta con excepción
     @Test
+    @Tag("cuenta")
+    @Tag("error")
     @DisplayName("Probando el debito de la cuenta con excepcion!")
     void testDineroInsuficienteException() {
         Exception exception = assertThrows(DineroInsuficienteException.class, () -> {
@@ -177,6 +186,8 @@ public class CuentaTest {
 
     // Test para la relación entre banco y cuentas
     @Test
+    @Tag("cuenta")
+    @Tag("banco")
    // @Disabled
     @DisplayName("Probando la relacion entre banco y cuentas!")
     void testRelacionBancoCuentas() {
@@ -343,8 +354,9 @@ public class CuentaTest {
         
     }
 
-@Nested
-class PruebasParametrizadasTest {
+    @Tag("param")
+    @Nested
+    class PruebasParametrizadasTest {
     @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
     @ValueSource(strings = {"100", "200", "300", "500", "700", "1000"})
     void testDebitoCuentaValueSource(String monto) {
@@ -404,6 +416,7 @@ class PruebasParametrizadasTest {
 }
     
 
+    @Tag("param")
     @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
     @MethodSource("montoList")
     void testDebitoCuentaMethodSource(String monto) {
