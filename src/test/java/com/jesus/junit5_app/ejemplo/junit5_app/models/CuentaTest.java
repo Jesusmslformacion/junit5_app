@@ -22,6 +22,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
@@ -67,9 +68,12 @@ public class CuentaTest {
         
     }
 
-    // Test para el nombre de la cuenta
+    @Nested
+    @DisplayName("Probando atributos de la cuenta corriente")
+    class CuentaTestNombreSaldo {
+        // Test para el nombre de la cuenta
     @Test
-    @DisplayName("Probando el nombre de la cuenta!")
+    @DisplayName("Nombre de la cuenta!")
     void testNombreCuenta() {
        
         //cuenta.setPersona("Jesus");
@@ -84,7 +88,7 @@ public class CuentaTest {
 
     // Test para el saldo de la cuenta
     @Test
-    @DisplayName("Probando el saldo de la cuenta!")
+    @DisplayName("Saldo de la cuenta!")
     void testSaldoCuenta() {
         assertNotNull(cuenta.getSaldo());
         assertEquals(1000.12345, cuenta.getSaldo().doubleValue());
@@ -94,7 +98,7 @@ public class CuentaTest {
 
     // Test para la referencia de la cuenta
     @Test
-    @DisplayName("Probando la referencia de la cuenta!")
+    @DisplayName("Referencia de la cuenta!")
     void testReferenciaCuenta() {
         cuenta = new Cuenta("John Doe", new BigDecimal(8900.9997));
         Cuenta cuenta2 = new Cuenta("John Doe", new BigDecimal(8900.9997));
@@ -104,8 +108,11 @@ public class CuentaTest {
         
         
     }
-
-    // Test para el método debito de la cuenta
+    }
+    
+    @Nested
+    class CuentaOperacionesTest {
+        // Test para el método debito de la cuenta
     @Test
     @DisplayName("Probando el debito de la cuenta!")
     void testDebitoCuenta() {
@@ -126,20 +133,6 @@ public class CuentaTest {
         
     }
 
-    // Test para el método debito de la cuenta con excepción
-    @Test
-    @DisplayName("Probando el debito de la cuenta con excepcion!")
-    void testDineroInsuficienteException() {
-        Exception exception = assertThrows(DineroInsuficienteException.class, () -> {
-            cuenta.debito(new BigDecimal(1500));
-        });
-        String actual = exception.getMessage();
-        String esperado = "Dinero insuficiente";
-
-        assertEquals(esperado, actual);
-
-    }
-
     // Test para el método transferir de la cuenta
     @Test
     @DisplayName("Probando el transferir de la cuenta!")
@@ -154,6 +147,24 @@ public class CuentaTest {
         assertEquals("3000", cuenta1.getSaldo().toPlainString());
         
     }
+    }
+    
+
+    // Test para el método debito de la cuenta con excepción
+    @Test
+    @DisplayName("Probando el debito de la cuenta con excepcion!")
+    void testDineroInsuficienteException() {
+        Exception exception = assertThrows(DineroInsuficienteException.class, () -> {
+            cuenta.debito(new BigDecimal(1500));
+        });
+        String actual = exception.getMessage();
+        String esperado = "Dinero insuficiente";
+
+        assertEquals(esperado, actual);
+
+    }
+
+    
 
     // Test para la relación entre banco y cuentas
     @Test
@@ -187,86 +198,103 @@ public class CuentaTest {
         
     }
 
-    @Test
-    @EnabledOnOs(OS.WINDOWS)
-    void testSoloWindows() {
+    @Nested
+    class SistemaOperativoTest {
+        @Test
+        @EnabledOnOs(OS.WINDOWS)
+        void testSoloWindows() {
 
+        }
+
+        @Test
+        @EnabledOnOs({OS.LINUX,OS.MAC})
+        void testSoloLinuxMac() {
+
+        }
+
+        @Test
+        @DisabledOnOs(OS.WINDOWS)
+        void testNoWindows() {
+
+        }
+    }
+    
+
+    @Nested
+    class JavaVesionTest {
+        @Test
+        @EnabledOnJre(JRE.JAVA_21)
+        void soloJdk21() {
+
+        }
+
+        @Test
+        @DisabledOnJre(JRE.JAVA_21)
+        void testNoJdk21() {
+
+        }
     }
 
-     @Test
-    @EnabledOnOs({OS.LINUX,OS.MAC})
-    void testSoloLinuxMac() {
+    @Nested
+    class SystemPropertiesTest {
 
-    }
-
-     @Test
-    @DisabledOnOs(OS.WINDOWS)
-    void testNoWindows() {
-
-    }
-
-
-     @Test
-     @EnabledOnJre(JRE.JAVA_21)
-    void soloJdk21() {
-
-    }
-
-    @Test
-     @DisabledOnJre(JRE.JAVA_21)
-    void testNoJdk21() {
-
-    }
-
-    @Test
-    void imprimirSystemProperties() {
+        @Test
+        void imprimirSystemProperties() {
         Properties properties = System.getProperties();
         properties.forEach((k,v)-> System.out.println(k + " :" + v));
 
-    }
+        }
 
-    @Test
-    @EnabledIfSystemProperty(named = "java.version", matches = ".*21.*")
-    void testJavaVersion() {
+        @Test
+        @EnabledIfSystemProperty(named = "java.version", matches = ".*21.*")
+        void testJavaVersion() {
         
-    }
+        }
 
-    @Test
-    @EnabledIfSystemProperty(named = "os.arch", matches = ".*64.*")
-    void testSolo64() {
+        @Test
+        @EnabledIfSystemProperty(named = "os.arch", matches = ".*64.*")
+        void testSolo64() {
         
+        }
     }
+     
+    @Nested
+    class VariableAmbienteTest {
 
-    @Test
-    void imprimirVariablesAmbiente() {
+        @Test
+        void imprimirVariablesAmbiente() {
         Map<String, String> getenv =System.getenv();
         getenv.forEach((k, v) -> System.out.println(k + " = " + v));
         
-    }
+        }
 
-    @Test
-    @EnabledIfEnvironmentVariable(named =  "JAVA_HOME", matches = ".*jdk-21.*")
-    void testJavaHome() {
-        
-    }
+        @Test
+        @EnabledIfEnvironmentVariable(named =  "JAVA_HOME", matches = ".*jdk-21.*")
+        void testJavaHome() {
+            
+        }
 
-    @Test
-    @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = ".*4.*")
-    void testProcesadores() {
-        
-    }
+        @Test
+        @EnabledIfEnvironmentVariable(named = "NUMBER_OF_PROCESSORS", matches = ".*4.*")
+        void testProcesadores() {
+            
+        }
 
-    @Test
-    @EnabledIfEnvironmentVariable(named = "ENVIRONMENT" , matches = "dev")
-    void testEnv() {
-        
-    }
+        @Test
+        @EnabledIfEnvironmentVariable(named = "ENVIRONMENT" , matches = "dev")
+        void testEnv() {
+            
+        }
 
-    @Test
-    @DisabledIfEnvironmentVariable(named = "ENVIRONMENT" , matches = "dev")
-    void testEnvProdDisabled() {
-        
+        @Test
+        @DisabledIfEnvironmentVariable(named = "ENVIRONMENT" , matches = "dev")
+        void testEnvProdDisabled() {
+            
+        }
     }
+    
+
+    
 
     @Test
     @DisplayName("test Saldo Cuenta Dev")
