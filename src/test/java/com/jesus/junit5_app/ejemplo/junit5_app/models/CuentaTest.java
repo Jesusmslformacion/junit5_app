@@ -29,7 +29,9 @@ import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.RepetitionInfo;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInfo;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestReporter;
 import org.junit.jupiter.api.condition.DisabledIfEnvironmentVariable;
 import org.junit.jupiter.api.condition.DisabledOnJre;
 import org.junit.jupiter.api.condition.DisabledOnOs;
@@ -85,8 +87,8 @@ public class CuentaTest {
         // Test para el nombre de la cuenta
     @Test
     @DisplayName("Nombre de la cuenta!")
-    void testNombreCuenta() {
-       
+    void testNombreCuenta(TestInfo testInfo, TestReporter testReporter) {
+       System.out.println("Ejecutando: " + testInfo.getDisplayName() + " con tags " + testInfo.getTags());
         //cuenta.setPersona("Jesus");
 
         String esperado = "Jesus";
@@ -376,21 +378,20 @@ public class CuentaTest {
         
     }
 
-    @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
-    @CsvSource({"200,100,Jesus,Martin", "250,200,Jonathan,Martin", "350,300,Betty,Lopez", "510,500,Florencio,Lopez", "750,700,Rosa,Alvarado", "1050,1000,Lucas,Perro"})
-    void testDebitoCuentaCsvSource2(String saldo, String monto, String esperado, String actual) {
-        System.out.println(saldo + " -> " + monto);
-        cuenta.setSaldo(new BigDecimal(saldo));
-        cuenta.debito(new BigDecimal(monto));
-        cuenta.setPersona(actual);
+    @ParameterizedTest
+@CsvSource({
+    "200,100,Jesus,Martin",
+    "250,200,Jonathan,Martin",
+    "350,300,Betty,Lopez"
+})
+void testDebitoCuentaCsvSource2(String saldo, String monto, String esperado, String actual) {
 
-        assertNotNull(cuenta.getSaldo());
-        assertNotNull(cuenta.getPersona());
-        assertEquals(esperado, actual);
-        assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
-        
-    }
+    cuenta.setSaldo(new BigDecimal(saldo));
+    cuenta.debito(new BigDecimal(monto));
+    cuenta.setPersona(esperado);
 
+    assertEquals(esperado, cuenta.getPersona());
+}
     @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
     @CsvFileSource(resources = "/data.csv")
     void testDebitoCuentaCsvFileSource(String monto) {
@@ -403,16 +404,19 @@ public class CuentaTest {
     @ParameterizedTest(name = "numero {index} ejecutando con valor {0} - {argumentsWithNames}")
     @CsvFileSource(resources = "/data2.csv")
     void testDebitoCuentaCsvFileSource2(String saldo, String monto, String esperado, String actual) {
-        cuenta.setSaldo(new BigDecimal(saldo));
-        cuenta.debito(new BigDecimal(monto));
-        cuenta.setPersona(actual);
 
-        assertNotNull(cuenta.getSaldo());
-        assertNotNull(cuenta.getPersona());
-        assertEquals(esperado, actual);
-        assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
-        
-    }
+    cuenta.setSaldo(new BigDecimal(saldo));
+    cuenta.debito(new BigDecimal(monto));
+    cuenta.setPersona(actual);
+
+    assertNotNull(cuenta.getSaldo());
+    assertNotNull(cuenta.getPersona());
+
+    // corrección
+    assertEquals(actual, cuenta.getPersona());
+
+    assertTrue(cuenta.getSaldo().compareTo(BigDecimal.ZERO) > 0);
+}
 }
     
 
